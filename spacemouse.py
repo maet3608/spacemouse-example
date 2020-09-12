@@ -1,9 +1,13 @@
+"""
+An extremely simply example on how to read data from the SpaceMouse
+and map it to application dependent commands/actions.
+"""
+
 import pyautogui as pa
 
 from time import sleep, time
 from win32gui import GetWindowText, GetForegroundWindow
 from pywinusb import hid
-
 
 
 class Handler(object):
@@ -25,8 +29,8 @@ class Handler(object):
         roll = data[12] - data[11]
 
         current_app = Handler.current_app()
-        #print(current_app)
-        #print(rt_btn, lt_btn, pitch, yaw, roll, x, y, z)
+        print(current_app)
+        print(rt_btn, lt_btn, pitch, yaw, roll, x, y, z)
 
         if 'Fusion 360' in current_app:
             return  # already supported application
@@ -38,8 +42,6 @@ class Handler(object):
             if roll < -50: pa.press('volumeup')
             if roll > 50: pa.press('volumedown')
             if rt_btn: pa.press('volumemute')
-
-
 
     @staticmethod
     def current_app():
@@ -62,7 +64,15 @@ def open_device():
     return None
 
 
+def list_all_devices():
+    import pywinusb.hid as hid
+    hids = hid.find_all_hid_devices()
+    for hid in set(hids):
+        print(hid)
+
+
 if __name__ == '__main__':
+    # list_all_devices()
     device = open_device()
     while device:
-        sleep(1)
+        sleep(10)
